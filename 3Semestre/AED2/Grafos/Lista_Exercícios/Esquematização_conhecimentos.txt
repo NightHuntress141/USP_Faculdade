@@ -1,0 +1,43 @@
+-> Conhecimentos teóricos de Grafos:
+    - Conceitos-chaves: vértice e aresta
+    - Ponderados X Não Ponderados
+    - Terminologias: Laço, vértice vizinho, vértice adjacente, arestas adjacentes, Grafo completo
+        - Não Dirigidos: Grau do vértice
+        - Dirigidos: Grau de entrada, Saída, Vértice tipo Fonte e Sorvedouro, Caminho Simples, Circuito e Ciclo
+
+-> Estruturas de Dados:
+    - Listas de Adjacência: Ideal para Grafos Dirigidos
+        - Se utiliza de duas structures: Vértice (guarda as informações do vértice em si) e Nó (guarda as informações das arestas)
+    - Matriz de Adjacência: Ideal para Grafos não Dirigidos
+
+-> Códigos fundamentais para Grafos:
+    - Inicialização
+    - Verificar se aresta existe
+    - Adicionar aresta
+    - Excluir aresta
+    - Copiar Grafo
+    - Grau de Saída e Entrada
+    - Desalocar um Grafo
+
+-> Algoritmos de Busca:
+    - Busca por Profundidade: Se utiliza de Backtraking (logo, recursão) para achar um caminho do vértice de origem i até o vértice de destino j
+        - Característica Fundamental: Não irá achar necessariamente o caminho mais curto
+        - FLAG: Se utiliza de uma informação adicional na structure de Vértice para dizer se aquele vértice já foi análisado ou não
+            - FLAG = 0: Vértice ainda não encontrado
+            - FLAG = 1: Vértice acabou de ser encontrado
+            - FLAG = 2: Vértice já foi análisado
+    - Busca em Largura: Se utiliza de uma outra estrutura de dados (Fila) para achar um caminho do vértice de origem i até o vértice de destino j
+        - Característica Fundamental: Irá achar o caminho mais curto
+        - FILA: Se utiliza de uma estrutura adicional para rastrear todos os adjacentes de um dado vértice e processar um por um, entrando e saindo da FILA
+
+-> Categória de Problemas que envolvem Busca por Profundidade:
+    - Achar UM ou TODOS ou N vértices com dada característica em sua structure
+    - Achar e mostrar um caminho entre i (origem) e j (destino)
+    - Achar e contar os valores das arestas que fazem um caminho entre i (origem) e j (destino)
+    - Achar um caminho entre i (origem) e j (destino):
+        - Sem passar por vértices com dada característica em sua structure
+        - Apenas passar por vértices com dada característica em sua structure
+    - Grafos Desconexos: ---> 15
+        - Como achar todos os valores de vértices
+        - Como achar a maior comunidade de vértices
+    - Como achar ciclos ---> 12

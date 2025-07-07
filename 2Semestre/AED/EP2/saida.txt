@@ -1,0 +1,98 @@
+
+### Inicializacao.
+Numero de nos: 1
+Numero de arranjos: 0
+Numero de palavras: 0
+Numero de palavras diferentes: 0
+
+### Primeiras insercoes.
+  2 teste [5]
+Numero de nos: 6
+Numero de arranjos: 5
+Numero de palavras: 2
+Numero de palavras diferentes: 1
+
+### Mais insercoes.
+  2 teste [5]
+  1 testemunha [10]
+  1 testemunhe [10]
+Numero de nos: 12
+Numero de arranjos: 10
+Numero de palavras: 4
+Numero de palavras diferentes: 3
+
+### Mais insercoes.
+  1 testa [5]
+  1 testamento [10]
+  2 teste [5]
+  1 testemunha [10]
+  1 testemunhe [10]
+Numero de nos: 18
+Numero de arranjos: 15
+Numero de palavras: 6
+Numero de palavras diferentes: 5
+
+### Exclusoes.
+  1 testa [5]
+  1 testamento [10]
+  1 testemunha [10]
+  1 testemunhe [10]
+Numero de nos: 18
+Numero de arranjos: 15
+Numero de palavras: 4
+Numero de palavras diferentes: 4
+
+### Mais exclusoes.
+  1 testa [5]
+  1 testamento [10]
+Numero de nos: 11
+Numero de arranjos: 10
+Numero de palavras: 2
+Numero de palavras diferentes: 2
+
+### Mais insercoes.
+  1 abacate [7]
+  4 abacaxi [7]
+  1 abobora [7]
+  1 banana [6]
+  1 caju [4]
+  1 melancia [8]
+  3 melao [5]
+  1 testa [5]
+  1 testamento [10]
+Numero de nos: 44
+Numero de arranjos: 36
+Numero de palavras: 14
+Numero de palavras diferentes: 9
+
+### Exclusoes (excluir todas as copias).
+  1 abacate [7]
+  1 abobora [7]
+  1 banana [6]
+  1 caju [4]
+  1 melancia [8]
+  3 melao [5]
+  1 testamento [10]
+Numero de nos: 42
+Numero de arranjos: 35
+Numero de palavras: 9
+Numero de palavras diferentes: 7
+
+### Buscas.
+Foram encontradas 0 copia(s) da palavra 'testa'.
+Foram encontradas 0 copia(s) da palavra 'mel'.
+Foram encontradas 3 copia(s) da palavra 'melao'.
+Foram encontradas 1 copia(s) da palavra 'melancia'.
+
+### Exclusoes adicionais (eliminando cada uma das palavras restantes).
+Numero de nos: 1
+Numero de arranjos: 0
+Numero de palavras: 0
+Numero de palavras diferentes: 0
+
+### Repetindo primeiras insercoes.
+  2 teste [5]
+Numero de nos: 6
+Numero de arranjos: 5
+Numero de palavras: 2
+Numero de palavras diferentes: 1

@@ -1,0 +1,73 @@
+LEIAME.txt
+
+EP1 - Combat!
+ACH2003 - Computação Orientada a Objetos
+
+Autores:
+- Nome: Rebecka Bocci Domingues
+  Número USP: 15486608
+- Nome: Ana Júlia Silva de Oliveira
+  Número USP: 14557202
+
+---------------------------------------------------
+Descrição do Projeto
+---------------------------------------------------
+
+Este projeto implementa o jogo "Combat!" descrito no enunciado fornecido. O objetivo do jogo é simular um campo de batalha entre soldados azuis e vermelhos, com movimentação, 
+combate e eliminação automática de jogadores, de acordo com regras pré-estabelecidas. O programa utiliza estruturas de dados e princípios de programação orientada a objetos em Java.
+
+---------------------------------------------------
+Instruções de compilação e execução (LINUX)
+---------------------------------------------------
+
+Pré-requisitos:
+- Java OpenJDK 21 instalado
+- GNU Make 4.4.1 ou superior
+
+Verifique as versões com os seguintes comandos:
+$ java -version
+$ make --version
+
+---------------------------------------------------
+Estrutura do diretório entregue:
+---------------------------------------------------
+
+Combat/
+├── src/
+│   ├── Combat.class
+│   ├── GameLib.class
+│   ├── Collision.class
+│   ├── Collision$Box.class
+│   ├── ISolid.class
+│   ├── MyKeyAdapter.class
+│   ├── PlayerController.class
+│   ├── Map.class
+│   ├── Wall.java
+│   ├── Shot.java
+│   ├── Player.java
+│   └── Score.java
+├── Makefile
+└── LEIAME.txt
+
+---------------------------------------------------
+Compilação do programa
+---------------------------------------------------
+
+Abra o terminal na raiz do diretório `Combat` e execute:
+
+$ make compile
+
+Este comando compilará os arquivos fonte (.java) localizados no diretório `src/` e gerará os arquivos .class necessários.
+
+---------------------------------------------------
+Execução do programa
+---------------------------------------------------
+
+Após a compilação, execute o programa com o comando:
+
+$ make run
+
+O comando acima irá iniciar o jogo "Combat!".
+
+
+

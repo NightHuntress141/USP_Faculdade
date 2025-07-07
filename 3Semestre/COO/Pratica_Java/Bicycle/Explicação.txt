@@ -1,0 +1,5 @@
+Este código busca aprofundar os conhecimentos sobre:
+
+-> Classes (Métodos, Construtores e campos)
+-> Objetos (Propriedades e uso dos métodos)
+-> Herança
