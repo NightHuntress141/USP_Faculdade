@@ -1,0 +1,281 @@
+
+########################
+   1. Tutorial de uso
+########################
+
+O programa process-run.py é um simulador simples de um sistema com
+um único processador que permite que você veja como o estado dos
+processos muda conforme são executados.
+Os seguintes estados são contemplados na simulação:
+
+  RUNNING - o processo está usando a CPU neste instante
+  READY   - o processo poderia estar usando a CPU,
+            porém a CPU está ocupada com outro processo
+  WAITING - o processo está esperando o fim de uma operação de E/S
+            (e.g., uma operação de disco)
+  DONE    - o processo terminou de executar
+
+Nesta tarefa, veremos a evolução do estados dos processos,
+buscando entender um pouco melhor como estas coisas funcionam.
+
+Este programa foi escrito em python.
+Para exibir uma ajuda de como usar o programa, digite:
+(há exemplos de uso mais detalhados mais adiante)
+
+prompt> ./process-run.py -h
+
+Será exibida a mensagem abaixo:
+
+	Usage: process-run.py [options]
+
+	Options:
+	  -h, --help            show this help message and exit
+	  -s SEED, --seed=SEED  the random seed
+	  -l PROCESS_LIST, --processlist=PROCESS_LIST
+		                a comma-separated list of processes to run, in the
+		                form X1:Y1,X2:Y2,... where X is the number of
+		                instructions that process should run, and Y the
+		                chances (from 0 to 100) that an instruction will use
+		                the CPU or issue an IO
+	  -L IO_LENGTH, --iolength=IO_LENGTH
+		                how long an IO takes
+	  -S PROCESS_SWITCH_BEHAVIOR, --switch=PROCESS_SWITCH_BEHAVIOR
+		                when to switch between processes: SWITCH_ON_IO,
+		                SWITCH_ON_END
+	  -I IO_DONE_BEHAVIOR, --iodone=IO_DONE_BEHAVIOR
+		                type of behavior when IO ends: IO_RUN_LATER,
+		                IO_RUN_IMMEDIATE
+	  -c                    compute answers for me
+	  -p, --printstats      print statistics at end; only useful with -c flag
+		                (otherwise stats are not printed)
+
+A opção mais importante de se entender é o PROCESS_LIST (especificada
+pelas flags -l ou --processlist). Esta opção especifica exatamente o que o
+processo vai executar. Neste simulador, há dois tipos de instruções:
+- instruções que usam a CPU
+- instruções que iniciam uma operação de E/S (e esperam que a operação complete)
+
+Se um processo usa apenas a CPU, ele deveria simplesmente alternar
+entre os estados de RUNNING e READY.
+
+Por exemplo, para gerar uma sequência de intruções para um único processo
+com 100% de instruções de CPU, com 5 instruções no total, poderia ser
+usado o seguinte comando:
+
+	prompt> ./process-run.py -l 5:100 
+	Produce a trace of what would happen when you run these processes:
+	Process 0
+	  cpu
+	  cpu
+	  cpu
+	  cpu
+	  cpu
+
+	Important behaviors:
+	  System will switch when the current process is FINISHED or ISSUES AN IO
+	  After IOs, the process issuing the IO will run LATER (when it is its turn)
+
+	prompt> 
+
+
+Você pode simular o que aconteceria se este processo fosse executado
+em um sistema utilizando a flag -c, obtendo o seguinte resultado:
+
+	prompt> ./process-run.py -l 5:100 -c
+	Time     PID: 0        CPU        IOs
+	  1     RUN:cpu          1
+	  2     RUN:cpu          1
+	  3     RUN:cpu          1
+	  4     RUN:cpu          1
+	  5     RUN:cpu          1
+
+Este resultado não é tão interessante: o processo apenas permanece no estado
+RUN e depois termina, usando a CPU o tempo todo, sem fazer nenhuma
+operação de E/S.
+
+Vamos deixar as coisas um pouquinho mais interessantes com dois processos.
+Isso pode ser feito através da flag -l adicionando a especificação de processos
+separados por vírgula:
+
+	prompt> ./process-run.py -l 5:100,5:100
+	Produce a trace of what would happen when you run these processes:
+	Process 0
+	  cpu
+	  cpu
+	  cpu
+	  cpu
+	  cpu
+
+	Process 1
+	  cpu
+	  cpu
+	  cpu
+	  cpu
+	  cpu
+
+	Important behaviors:
+	  Scheduler will switch when the current process is FINISHED or ISSUES AN IO
+	  After IOs, the process issuing the IO will run LATER (when it is its turn)
+
+Os dois processos, novamente, usam apenas a CPU.
+O que acontece se os dois executarem ao mesmo tempo no SO?
+Basta simular:
+
+	prompt> ./process-run.py -l 5:100,5:100 -c
+	Time     PID: 0     PID: 1        CPU        IOs
+	  1     RUN:cpu      READY          1
+	  2     RUN:cpu      READY          1
+	  3     RUN:cpu      READY          1
+	  4     RUN:cpu      READY          1
+	  5     RUN:cpu      READY          1
+	  6        DONE    RUN:cpu          1
+	  7        DONE    RUN:cpu          1
+	  8        DONE    RUN:cpu          1
+	  9        DONE    RUN:cpu          1
+	 10        DONE    RUN:cpu          1
+
+Como você pode ver, o processo com ID 0 (ou PID 0) executa primeiro,
+enquanto que o processo 1 fica no estado READY aguardando a sua vez.
+Quando o processo 0 termina, seu estado muda para DONE e o processo 1
+começa a executar. Quando o processo 1 termina, a simulação como um todo termina.
+
+Vamos investigar mais um exemplo antes de ir para a tarefa de casa em si.
+Neste exemplo, o processo vai fazer apenas operações de E/S.
+Vamos especificar que uma operação de E/S demora 5 unidades de tempo para
+terminar através da flag -L.
+
+	prompt> ./process-run.py -l 3:0 -L 5
+	Produce a trace of what would happen when you run these processes:
+	Process 0
+	  io-start
+	  io-start
+	  io-start
+
+	Important behaviors:
+	  System will switch when the current process is FINISHED or ISSUES AN IO
+	  After IOs, the process issuing the IO will run LATER (when it is its turn)
+
+O que você acha que vai acontecer ao simular este processo? Vamos ver:
+
+	prompt> ./process-run.py -l 3:0 -L 5 -c
+	Time     PID: 0        CPU        IOs
+	  1  RUN:io-start          1
+	  2     WAITING                     1
+	  3     WAITING                     1
+	  4     WAITING                     1
+	  5     WAITING                     1
+	  6* RUN:io-start          1
+	  7     WAITING                     1
+	  8     WAITING                     1
+	  9     WAITING                     1
+	 10     WAITING                     1
+	 11* RUN:io-start          1
+	 12     WAITING                     1
+	 13     WAITING                     1
+	 14     WAITING                     1
+	 15     WAITING                     1
+	 16*       DONE
+
+Como você pode ver, o processo apenas executa três operações de E/S.
+Após a operação de E/S iniciar, o processo vai para o estado de WAITING.
+Enquanto o dispositivo de E/S se encarrega de executar a operação,
+a CPU fica ociosa.
+
+Vamos exibir algumas estatísticas (executando o mesmo comando acima, porém com a flag adicional -p):
+
+	Stats: Total Time 16
+	Stats: CPU Busy 3 (18.75%)
+	Stats: IO Busy  12 (75.00%)
+
+Como você pode ser, a simulação demorou 16 unidades de tempo para executar,
+mas a CPU esteve ocupada menos de 20% do tempo. O dispositivo de E/S, em
+contrapartida, trabalhou bastante. De forma geral, gostaríamos de manter
+todos os recursos ocupados a maior parte do tempo, por questões de eficiência.
+
+Há algumas outras flags que são importantes:
+  -s SEED, --seed=SEED  a semente do gerador de números aleatórios  
+    permite que você crie processos diferentes de forma aleatória
+
+  -L IO_LENGTH, --iolength=IO_LENGTH
+    determina a duração da operação de E/S (já vimos no exemplo)
+
+  -S PROCESS_SWITCH_BEHAVIOR, --switch=PROCESS_SWITCH_BEHAVIOR
+    onde PROCESS_SWITCH_BEHAVIOR pode ser SWITCH_ON_IO ou SWITCH_ON_END.
+    Determina quando há troca de execução para outro processo:
+    - SWITCH_ON_IO, troca de processo quando o processo atual fizer E/S
+    - SWITCH_ON_END, troca de processo apenas quando o atual terminar
+
+  -I IO_DONE_BEHAVIOR, --iodone=IO_DONE_BEHAVIOR
+    onde IO_DONE_BEHAVIOR pode ser : IO_RUN_LATER ou IO_RUN_IMMEDIATE.
+    Determina quando um processo executa após fazer operação de E/S:
+    - IO_RUN_IMMEDIATE: troca para o processo imediatamente
+    - IO_RUN_LATER: troca para o processo quando for natural 
+      (ou seja, depende de PROCESS_SWITCH_BEHAVIOR)
+
+####################
+   2. Exercícios
+####################
+
+Agora responda as seguintes perguntas (traduzidas do capítulo do livro):
+
+1. Execute o process-run.py com os seguintes argumentos: -l 5:100,5:100
+   Qual você espera que seja a utilização da CPU?
+   (ou seja, qual a porcentagem de tempo que a CPU estará em uso?)
+   Por que você achou isso?
+   Execute o programa com  -c -p para conferir sua resposta.
+
+2. Agora execute com estes argumentos: -l 4:100,1:0
+   Ou seja, um processo composto por 4 instruções de CPU, e um outro
+   processo que faz uma única operação de E/S (com a duração padrão de 5 tempos).
+   Quanto tempo você acha que vai demorar para a simulação terminar?
+   Execute novamente com -c -p para conferir sua resposta.
+
+3. Agora troque a ordem destes processos: -l 1:0,4:100 
+   O que você acha que vai acontecer?
+   Essa troca vai fazer alguma diferença? Por quê?
+   (Como de costume, use -c -p para conferir sua resposta)
+
+4. Vamos explorar as outras flags agora. Uma delas é o -S,
+   que determina como o sistema reage quando um processo inicia
+   uma operação de E/S.
+   Se a flag for SWITCH_ON_END, o sistema NÃO troca para outro
+   processo enquanto estiver fazendo operações de E/S, esperando
+   até que o processo termina completamente.
+   Explique o que acontece se executar a simulação com os argumentos
+   -l 1:0,4:100 -c -p -S SWITCH_ON_END (note que um processo faz apenas E/S
+   e o outro usa apenas a CPU).
+
+5. Agora execute uma simulação com os mesmos processos,
+   mas setando a flag para fazer o sistema trocar de processo
+   se houver pedido de E/S (-l 1:0,4:100 -c -S SWITCH_ON_IO).
+   O que você acha que vai acontecer?
+   Execute com -c -p para conferir sua resposta.
+
+6. Outro comportamento importante está relacionado ao que fazer
+   quando a operação de E/S de um processo termina.
+   Com -I IO_RUN_LATER, quando a operação de E/S termina, 
+   o processo que iniciou a operação não vai necessariamente
+   voltar a executar na CPU imediatamente, o processo que estava 
+   rodando vai continuar rodando.
+   O que acontece ao executar a simulação abaixo?
+   	./process-run.py -l 3:0,5:100,5:100,5:100 -S SWITCH_ON_IO -c -p -I IO_RUN_LATER
+   Os recursos do sistema são usados de forma eficiente?
+
+7. Execute a mesma simulação, mas com -I IO_RUN_IMMEDIATE,
+   o que faz com que sistema volte a executar o processo que
+   iniciou a operação de E/S anteriormente.
+   Qual é a diferença de comportamento?
+   Por que pode ser uma boa ideia executar um processo que acabou de ter
+   a sua operação de E/S concluída?
+
+8. Agora vamos introduzir aleatoriedade gerando três conjuntos de
+   processos diferentes com os seguintes argumentos:
+     ./process-run.py -s 1 -l 3:50,3:50
+     ./process-run.py -s 2 -l 3:50,3:50
+     ./process-run.py -s 3 -l 3:50,3:50
+   Veja se ve você consegue prever o que vai acontecer na simulação.
+   Quais as diferenças entre usar -I IO_RUN_IMMEDIATE e -I IO_RUN_LATER?
+   Quais as diferenças entre usar -S SWITCH_ON_IO e -S SWITCH_ON_END?
+   Execute com -c -p para conferir sua resposta.
+
+

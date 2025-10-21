@@ -1,0 +1,220 @@
+##############
+# Introdução #
+##############
+
+Este script python é um simulador do escalonador MLFQ que estudamos em aula.
+O script permite gerar situações de escalonamento de forma aleatória, ou
+configurar o cenário de forma arbitrária para testar o funcionamento do MLQF
+em situações específicas.
+
+#########################
+# Execução de simulação #
+#########################
+
+O objetivo deste script é permitir gerar cargas de trabalho (um conjunto de processos) para que você tente executar o escalonador na mão.
+Depois você pode conferir sua resposta executando o simulador com a flag -c.
+
+Para executar o programa, digite na linha de comando:
+
+prompt> ./mlfq.py
+
+Use a flag -h para ver as opções disponíveis:
+
+Usage: mlfq-pt.py [options]
+
+Options:
+  -h, --help            show this help message and exit
+  -s SEED, --seed=SEED  semente do gerador de números aleatórios
+  -n NUMQUEUES, --numQueues=NUMQUEUES
+                        número de filas do MLFQ (apenas se não usar a opção
+                        -Q)
+  -q QUANTUM, --quantum=QUANTUM
+                        duração do time slice (apenas se não usar a opção -Q)
+  -Q QUANTUMLIST, --quantumList=QUANTUMLIST
+                        duração do time slice para cada fila, no seguinte
+                        formato: x,y,z,... no qual x é o valor para a fila de
+                        maior prioridade, y para a segunda maior prioridade, e
+                        assim por diante
+  -a ALLOTMENT, --allotment=ALLOTMENT
+                        tamanho da cota em time slices (apenas se não usar a
+                        opção -A)
+  -A ALLOTMENTLIST, --allotmentList=ALLOTMENTLIST
+                        tamanho da cota para cada fila, no seguinte formato:
+                        x,y,z,... no qual x é o valor para a fila de maior
+                        prioridade, y para a segunda maior prioridade, e assim
+                        por diante
+  -j NUMJOBS, --numJobs=NUMJOBS
+                        quantidade total de jobs (processos) gerados
+                        aleatoriamente
+  -m MAXLEN, --maxlen=MAXLEN
+                        tempo máximo de CPU dos processos gerados
+                        aleatoriamente
+  -M MAXIO, --maxio=MAXIO
+                        frequência máxima de operaçãoes de E/S para processos
+                        gerados aleatoriamente
+  -B BOOST, --boost=BOOST
+                        tempo para resetar a prioridade de todos os processos
+                        para a prioridade máxima (zero para desabilitar)
+  -i IOTIME, --iotime=IOTIME
+                        duração de uma operaçãode E/S (constante para todas as
+                        E/S da simulação)
+  -S, --stay            reseta cota ao iniciar operação de E/S
+  -I, --iobump          coloca processo no início da fila após finalizar
+                        operação de E/S (em vez de colocar no final da fila)
+  -l JLIST, --jlist=JLIST
+                        lista separada por vírgulas dos processos a serem
+                        executados, no seguinte formato x1,y1,z1:x2,y2,z2:...
+                        no qual x é o instante de chegada do processo,y é o
+                        tempo total de CPU, e z é o intervalo entre operações
+                        de E/S deste processo
+  -c                    calcular a resposta
+
+
+Há basicamente duas formas de usar o simulador: com processos gerados aleatoriamente ou definindo manualmente quais são os processos.
+Por exemplo, para criar uma carga de trabalho de três processos, digite: 
+
+prompt> ./mlfq.py -j 3
+
+Você verá a especificação da carga de trabalho a ser escalonada:
+
+	Configuração da simulação:
+		Quantidade de jobs:  3
+		Quantidade de filas: 3
+		Cota  para  a fila de prioridade  2:   1
+		Time slice da fila de prioridade  2:  10
+		Cota  para  a fila de prioridade  1:   1
+		Time slice da fila de prioridade  1:  10
+		Cota  para  a fila de prioridade  0:   1
+		Time slice da fila de prioridade  0:  10
+		Tempo de reset de prioridades:  0
+		Duração de E/S: 5
+		Reset de cota True
+		Volta para o início da fila após I/O: False
+
+
+	Para cada job, três características são fornecidas:
+	  startTime : instante em que o job chega no sistema
+	  runTime   : tempo total de CPU que o job precisa para terminar
+	  ioFreq    : a cada ioFreq unidades de tempo de CPU, o job inicia uma operação de E/S
+		      (a duração da operação de E/S é um parâmetro global da simulação)
+
+	Lista de jobs:
+	  Job  0: startTime   0 - runTime  84 - ioFreq   7
+	  Job  1: startTime   0 - runTime  42 - ioFreq   3
+	  Job  2: startTime   0 - runTime  51 - ioFreq   4
+
+	Compute a execução do MLFQ para esta carga de trabalho.
+	Pode ser interessante calcular o tempo total de execução e o tempo de resposta para cada processo.
+
+	Execute o programa novamente com a flag -c para obter a resposta.
+
+Foi gerada uma carga de trabalho de 3 jobs (conforme especificado com o -j 3),
+usando os valores padrão para os outros parâmetros (por exemplo, três filas).
+Ao exercutar o programa novamente com a flag -c, você verá a seguinte saída:
+
+	Execução da simulação:
+
+	[ tempo   0 ] JOB 0 chegou!
+	[ tempo   0 ] JOB 1 chegou!
+	[ tempo   0 ] JOB 2 chegou!
+	[ tempo   0 ] JOB 0 executou com PRIORIDADE 2 		 [ tempo até final do TS 9;  cotas 1;  tempo restante 83 (de 84) ]
+	[ tempo   1 ] JOB 0 executou com PRIORIDADE 2 		 [ tempo até final do TS 8;  cotas 1;  tempo restante 82 (de 84) ]
+	[ tempo   2 ] JOB 0 executou com PRIORIDADE 2 		 [ tempo até final do TS 7;  cotas 1;  tempo restante 81 (de 84) ]
+	[ tempo   3 ] JOB 0 executou com PRIORIDADE 2 		 [ tempo até final do TS 6;  cotas 1;  tempo restante 80 (de 84) ]
+	[ tempo   4 ] JOB 0 executou com PRIORIDADE 2 		 [ tempo até final do TS 5;  cotas 1;  tempo restante 79 (de 84) ]
+	[ tempo   5 ] JOB 0 executou com PRIORIDADE 2 		 [ tempo até final do TS 4;  cotas 1;  tempo restante 78 (de 84) ]
+	[ tempo   6 ] JOB 0 executou com PRIORIDADE 2 		 [ tempo até final do TS 3;  cotas 1;  tempo restante 77 (de 84) ]
+	[ tempo   7 ] JOB 0 iniciou E/S
+	[ tempo   7 ] JOB 1 executou com PRIORIDADE 2 		 [ tempo até final do TS 9;  cotas 1;  tempo restante 41 (de 42) ]
+	[ tempo   8 ] JOB 1 executou com PRIORIDADE 2 		 [ tempo até final do TS 8;  cotas 1;  tempo restante 40 (de 42) ]
+	[ tempo   9 ] JOB 1 executou com PRIORIDADE 2 		 [ tempo até final do TS 7;  cotas 1;  tempo restante 39 (de 42) ]
+(... a simulação continua ...)
+	[ tempo 180 ] JOB 0 TERMINOU
+
+	Estatísticas:
+	  Job  0: startTime   0 - tempo de resposta   0 - tempo total de execução 180
+	  Job  1: startTime   0 - tempo de resposta   7 - tempo total de execução 161
+	  Job  2: startTime   0 - tempo de resposta  10 - tempo total de execução 171
+
+	Tempo de resposta médio: 5.67
+	Tempo de execução médio: 170.67
+
+A simulação mostra todos os eventos e decisões tomadas pelo escalonador em cada unidade de tempo da simulação.
+Neste exemplo, o Job 0 executou por 7 unidades de tempo, até iniciar uma operação de E/S.
+Este evento era completamente previsível, uma vez que o período entre operações de E/S do Job 0 é 7, ou seja,
+sempre após usar a CPU por 7 tempos, o Job 0 faz uma operação de E/S.
+Neste momento, o escalonador colocar o Job 1 para executar.
+Ao final da simulação, são calculados o tempo de resposta e tempo total de execução para cada processo, bem como os tempos médios.
+
+#####################
+# Outros parâmetros #
+#####################
+
+É possível controlar diversos aspectos da simulação. Por exemplo, você pode especificar
+a quantidade de filas no sistema (com -n) e o tamanho do time slice (com -q);
+para especificar time slices diferentes para cada fila, utilize -Q, por exemplo,
+-n3 -Q 10,20,30 resulta em um escalonador com três filas, sendo que o time slice da
+fila de maior prioridade é 10, o do meio é 20 e o time slice da fila de menor prioridade é 30.
+
+Você pode especificar o tamanho da cota para todas as filas com -a, ou, se quiser especificar
+valores diferentes para cada fila, use -A. Por exemplo -A 2,4,6 especifica que a cota para
+as filas são 2, 4 e 6, respectivamente. O valor da cota é medido em quantidade de time slices.
+
+No caso de jobs gerados aleatpriamente, você pode controlar o tempo de CPU máximo que
+um job pode precisar (com -m) e o período máximo entre operações de E/S (com -M).
+
+Porém, se você quiser determinar manualmente as características dos jobs, você pode usar
+-l ou --jlist para especificar os jobs a serem escalonados.
+Os jobs são especificados em uma lista com o formato x1,y1,z1:x2,y2,z2:... no qual
+x representa o instante de chegada do job, y o tempo de CPU, e z o período entre operações de E/S
+(se z for zero, o processo não faz E/S).
+
+Por fim, há outros parâmetros interessantes.
+A flag -B, se for setada para um valor diferente de zero, determina o intervalo de tempo
+para resetar a prioridade de todos os processo para a prioridade máxima.
+Esta funcionalidade pode ser usada para evitar starvation, conforme discutimos em aula, mas 
+é desabilitada por padrão.
+
+A flag -S faz com que a cota seja resetada quando um processo inicia uma operação de E/S,
+como dita a versão da regra #4 que vimos durante a aula.
+Este comportamento permite manipular o escalonador para manter o processo sempre com prioridade alta.
+
+É possível alterar o tempo para realizar uma operção de E/S (a diferença entre o tempo de início
+e fim da E/S) com a flag -i.
+Neste simulador simplificado, assume-se que todas as operações de E/S tem a mesma duração.
+O valor padrão é 5.
+
+O último parâmetro é a flag -I.
+Se esta flag estiver habilitada, o processo são colocados no começo da fila ao terminar um operação de E/S,
+em vez de ir para o fim (que é o comportamento padrão).
+
+###########
+# Tarefas #
+###########
+
+1. Gere alguns problemas aleatório com apenas dois processos e duas filas (limite o tempo máximo de CPU e desabilite E/S para não ficar muito longo).
+   Execute o escalonador MLFQ na mão para estes problemas.
+   
+2. Como você poderia usar o simulador para reproduzir os exemplos do livro?
+
+3. Como você poderia configurar o simulador para que ele se comporte como um escalonador Round Robin?
+
+4. Craft a workload with two jobs and scheduler parameters so that
+one job takes advantage of the older Rules 4a and 4b (turned on
+with the -S flag) to game the scheduler and obtain 99% of the CPU
+over a particular time interval.
+
+4. Crie uma carga de trabalho com dois processos e ajuste os outros parâmetros do simulador de forma que
+   um dos processos manipule o escalonador e use cerca de 99% da CPU.
+   Dica: use a flag -S!
+
+5. Given a system with a quantum length of 10 ms in its highest queue,
+how often would you have to boost jobs back to the highest priority
+level (with the -B flag) in order to guarantee that a single longrunning (and potentially-starving) job gets at least 5% of the CPU?
+
+5. Usando um time slice de 10 unidades de tempo para a fila de maior prioridade,
+   com que freqência seria necessário resetar todas as prioridades (flag -B) para
+   garantir que um processo CPU-bound consiga ao menos 5% de tempo de CPU (considerando uma situação de possível starvartion)?
+
+6. Teste algumas cargas de trabalho com e sem a flag -I.
+   Como a escolha de colocar um processo que terminou E/S no fim ou no começo da fila afeta o escalonamento?
